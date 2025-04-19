@@ -18,16 +18,15 @@ class UserFileCreateView(generics.CreateAPIView):
             return Response(
                 {"error": "No file provided"}, status=status.HTTP_400_BAD_REQUEST
             )
-
         file_hash = UserFileUtil.compute_file_hash(file_obj)
 
         stored_file, created = StoredFile.objects.get_or_create(
             file_hash=file_hash, defaults={"file": file_obj, "size": file_obj.size}
         )
-
+        
         user_file = UserFile.objects.create(
             stored_file=stored_file,
-            original_filename=file_obj.name,
+            filename=file_obj.name,
             file_type=file_obj.content_type,
         )
 
@@ -45,8 +44,8 @@ class UserFileListView(generics.ListAPIView):
         filters.OrderingFilter,
     ]
     filterset_class = UserFileFilter
-    search_fields = ["original_filename"]
-    ordering_fields = ["uploaded_at", "original_filename", "stored_file__size"]
+    search_fields = ["filename"]
+    ordering_fields = ["uploaded_at", "filename", "stored_file__size"]
     ordering = ["-uploaded_at"]
 
 

@@ -7,13 +7,5 @@ class UserFileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = UserFile
-        fields = ['id', 'original_filename', 'file_type', 'uploaded_at', 'file_url', 'size']
+        fields = ['id', 'filename', 'file_type', 'uploaded_at', 'file_url', 'size']
         read_only_fields = ['uploaded_at', 'file_url', 'size']
-
-    def validate(self, attrs):
-        request = self.context.get('request')
-        if request and request.method == 'POST':
-            file_obj = request.FILES.get('file')
-            if file_obj and file_obj.size > 10 * 1024 * 1024:  # 10 MB
-                raise serializers.ValidationError("File size must not exceed 10MB.")
-        return attrs
